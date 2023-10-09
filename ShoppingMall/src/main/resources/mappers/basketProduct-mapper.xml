@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.itwill.joo.repository.BasketProductRepository">
+		
+	
+		<!-- 상품을 장바구니에 넣는다. -->
+		<insert id="insertProductAddBasket">
+			insert into BASKET_PRODUCTS (B_ID , P_ID, PCOUNT) values (#{b_id} , #{p_id} , #{pcount})
+		</insert>
+		
+		<select id="selectOrderByBasketProductIdDesc" resultType="com.itwill.joo.dto.basket.BasketProductListDto">
+			select bp.*, p.pname, p.pprice, p.ptitle_image
+			from BASKET b, BASKET_PRODUCTS bp, PRODUCTS p
+			where b.id = bp.b_id
+			and bp.p_id = p.id
+			and b.id = #{b_id}
+			order by bp.id desc
+		</select>
+		
+		<!-- userId의 장바구니 상품을 전체 삭제한다. -->
+		 <delete id="deleteAll">
+		 <!--  
+	        delete from BASKET_PRODUCTS
+	        where B_ID in  (
+	        select BP.B_ID
+	        from BASKET_PRODUCTS BP
+	        INNER JOIN BASKET B ON BP.B_ID = B.ID
+	        INNER JOIN USERS U ON U.ID = B.U_ID
+	        WHERE U.ID = ${userId}
+	        )-->
+	        
+	        delete from BASKET_PRODUCTS
+	        where B_ID = (select B.ID from BASKET B where B.U_ID = #{userId})
+   		 </delete>
+		
+		
+		<!-- 회원의 장바구니 상품 개별 삭제 -->
+		<delete id="deleteById">		
+			delete from BASKET_PRODUCTS
+			where ID = #{id}
+		</delete>
+
+<!-- 
+		<select id="checkProductInBasket">
+			select bp.* from BASKET_PRODUCTS bp
+			JOIN PRODUCTS p ON bp.p_id = p.id 
+			where bp.b_id = ${userId}
+		</select> 
+-->		
+
+		<!-- 장바구니에서 같은 상품 아이디가 있는지 찾는다 -->
+		<select id="selectById" resultType="int">
+			select count(*) from BASKET_PRODUCTS 
+			where B_ID = #{b_id} and P_ID = #{p_id} 
+		</select>
+
+		<select id="selectByBasketProductsId" resultType="int">
+			select * from BASKET_PRODUCTS 
+			where B_ID = #{b_id} and P_ID = #{p_id} 
+		</select>
+		<!-- 같은 상품이 있을 경우 수량을 업데이트, 수량 더하기.-->
+		<update id="updatePcount">
+			update BASKET_PRODUCTS 
+			set PCOUNT = #{pcount}
+			where B_ID = #{b_id}
+			and P_ID = #{p_id}
+		</update>
+	
+		<!-- 장바구니에서 상품 수량 수정 -->
+		<update id="updateQuantityPcount">
+			update BASKET_PRODUCTS 
+			set PCOUNT = #{pcount}
+			where B_ID = #{b_id}
+			and P_ID = #{p_id}
+		</update>
+		
+	</mapper>

@@ -1,0 +1,42 @@
+@charset "UTF-8";
+
+/* quesitionQnaDetail에서 사용 */
+        .navbar {
+            background-color: #f8f9fa !important;
+        }
+
+        .navbar-nav {
+            background-color: #f8f9fa !important;
+        }
+
+        .card {
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-footer {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: right;
+        }
+
+        .btn-outline-primary {
+            background-color: transparent;
+            color: #007bff;
+            border-color: #007bff;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .form-control[readonly] {
+            background-color: #f8f9fa;
+        }

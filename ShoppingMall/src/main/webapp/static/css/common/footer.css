@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+/*  footerl에서 사용 */
+
+
+.footer-heading {
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .footer-link {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: #BBDEFB;
+    }
+
+    .footer-social-icons {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-social-icons li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .footer-social-icons li a {
+      color: white;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .footer-social-icons li a:hover {
+      color: #BBDEFB;
+    }
+
+    .footer-copyright {
+      color: white;
+      font-size: 14px;
+      margin-top: 30px;
+    }

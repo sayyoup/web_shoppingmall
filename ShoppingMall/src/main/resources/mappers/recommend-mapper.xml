@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.itwill.joo.repository.RecommendRepository">
+
+    <!--  채한별 
+    Product Recommend SQL문 정
+    -->
+    
+    <!--추천 입력 -->
+    <insert id="insertRecommend">
+        INSERT INTO RECOMMEND (u_id, p_id)
+        VALUES (#{u_id), #(p_id)
+    </insert> 
+     
+    <!--  추천 삭제 -->
+    <delete id="deleteRecommend">
+        DELETE 
+        FROM RECOMMEND
+        WHERE U_ID = #{u_id) AND P_ID = #{p_id}
+    </delete>
+     
+    <!--  해당 상품의 추천 조회 -->
+    <select id = "selectRecommendProductByPid" resultType="com.itwill.joo.domain.Recommend">
+        SELECT count(p_id)
+        FROM RECOMMEND
+        WHERE P_ID = {p_id}
+    </select>
+     
+    <!--  추천 조회(많이 받은 순으로) 이거 프로덕트 로 이동 --> 
+    <select id="selectRecommendProductOrderByDesc" resultType="com.itwill.joo.domain.Recommend">
+        SELECT P.ID, COUNT(R.P_ID) AS "추천수"
+        FROM PRODUCTS P
+        JOIN RECOMMEND R 
+        ON R.P_ID = P.ID
+        GROUP BY P.ID
+        ORDER BY "추천수" DESC;
+    </select>
+ 
+    <!-- 자신이 한 추천수 조회 -->
+<select id="selectRecommendByUid" resultType="com.itwill.joo.domain.Recommend">
+        SELECT P.*
+        FROM RECOMMEND R
+        JOIN USERS U ON R.U_ID = U.ID
+        JOIN PRODUCTS P ON R.P_ID = P.ID
+        WHERE R.U_ID = #{u_id}
+        ORDER BY R.ID DESC;
+</select>
+    
+     
+</mapper>

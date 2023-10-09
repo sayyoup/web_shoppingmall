@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper namespace="com.itwill.joo.repository.AdminQuestionRepository">
+    
+    <!-- 문의관리 읽기, 정렬, 수정, 삭제 -->
+    <select id="selectWithUsersNameList" resultType="com.itwill.joo.dto.question.QuestionAdminListDto">
+        SELECT 
+        q.id as q_id,
+        q.qtitle as qcontent,
+        q.is_answered as is_answered,
+        q.qtype as qtype,
+        q.qcreated_time as qcreated_time,
+        q.qtitle as qtitle,
+        q.qreplycreated_time as qreplycreate_time,
+        u.uname as u_id
+        FROM questions q
+        JOIN users u ON q.u_id = u.id
+    </select>
+       
+   <select id="selectWithUsersNameOne" resultType="com.itwill.joo.dto.question.QuestionAdminListDto">
+        SELECT 
+        q.id as q_id,
+        q.qtitle as qcontent,
+        q.is_answered as is_answered,
+        q.qtype as qtype,
+        q.qcreated_time as qcreated_time,
+        q.qtitle as qtitle,
+        q.qreplycreated_time as qreplycreate_time,
+        u.uname as u_id
+        FROM questions q
+        JOIN users u ON q.u_id = u.id
+        where q.id = #{id}
+    </select>
+    
+    <select id="selectNoAnsweredFirst" resultType="com.itwill.joo.dto.question.QuestionAdminListDto">
+        SELECT 
+        q.id as q_id,
+        q.qtitle as qcontent,
+        q.is_answered as is_answered,
+        q.qtype as qtype,
+        q.qcreated_time as qcreated_time,
+        q.qtitle as qtitle,
+        q.qreplycreated_time as qreplycreate_time,
+        u.uname as u_id
+        FROM questions q
+        JOIN users u ON q.u_id = u.id
+        order by
+        IS_ANSWERED desc,
+        QCREATED_TIME
+    </select>
+    
+    <update id = "updateAnswered">
+        update QUESTIONS 
+        set is_answered = #{is_answered}, QREPLYCREATED_TIME = systimestamp
+        where ID = #{id}    
+    </update>
+        
+    </mapper>

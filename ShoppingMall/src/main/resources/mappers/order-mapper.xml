@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.itwill.joo.repository.OrderRepository">
+    <!-- 주문 상세페이지 상품정보 -->
+    <select id="selectOrderedProduct"
+        resultType="com.itwill.joo.dto.order.OrderedProductDto">
+        select ID, PTITLE_IMAGE, PNAME, PPRICE, PSTOCK
+        from PRODUCTS
+        where ID = #{id}
+    </select>
+
+    <!-- 주문 상세페이지 주문자정보 -->
+    <select id="selectOrdererInfo"
+        resultType="com.itwill.joo.dto.order.OrdererInfoDto">
+        select ID, UNAME, UPOSTCODE, USTREET,
+        UDETAIL_ADDRESS,
+        UPHONE, UEMAIL, UCURRENT_POINT
+        from USERS
+        where ID = #{id}
+    </select>
+
+    <!-- 주문 내역 조회 페이지 상품, 배송 정보 -->
+    <select id="selectOrderHistory"
+        resultType="com.itwill.joo.dto.order.OrderHistoryDto">
+        SELECT D.ID, P.PTITLE_IMAGE, P.pname, P.pstock, OP.pprice, OP.pcount, D.dcreated_time, O.opoint,
+               D.dstatus, D.dmodified_time, O.odiscount_price, U.ID as "uid", P.ID as "pid",
+               O.ID as "oid", OP.ID as "opid", D.DCODE, O.OINITIAL_PRICE, P.PALC, P.PREGION
+        FROM PRODUCTS P, ORDERS O, ORDER_PRODUCTS OP, DELIVERIES D, USERS U
+        WHERE O.ID = OP.O_ID
+        AND OP.P_ID = P.ID
+        AND D.O_ID = O.ID
+        AND O.U_ID = U.ID
+        AND U.ID = #{id}
+        ORDER BY D.DCREATED_TIME desc
+    </select>
+    
+    <!-- 0보류0 취소 내역 조회 페이지 상품 정보 -->
+    <select id="selectOrderCancelHistory"
+        resultType="com.itwill.joo.dto.order.OrderCancelHistoryDto">
+        SELECT D.ID, P.PTITLE_IMAGE, P.pname, P.pstock, OP.pprice, OP.pcount, D.dcreated_time, O.opoint,
+               D.dstatus, D.dmodified_time, O.odiscount_price, U.ID as "uid", P.ID as "pid",
+               O.ID as "oid", OP.ID as "opid"
+        FROM PRODUCTS P, ORDERS O, ORDER_PRODUCTS OP, DELIVERIES D, USERS U
+        WHERE O.ID = OP.O_ID
+        AND OP.P_ID = P.ID
+        AND D.O_ID = O.ID
+        AND O.U_ID = U.ID
+        AND U.ID = #{id}
+        ORDER BY D.dmodified_time desc
+    </select>
+
+    <!-- 0보류0 주문 내역에서 주문취소를 누를 시 주문배송과 관련된 3개의 delete 쿼리문 실행 -->
+    <delete id="deleteOrder">
+        DELETE FROM ORDERS WHERE ID = #{id}
+    </delete>
+
+    <delete id="deleteOrderProduct">
+        DELETE FROM ORDER_PRODUCTS WHERE O_ID = #{id}
+    </delete>
+
+    <delete id="deleteDelivery">
+        DELETE FROM DELIVERIES WHERE O_ID = #{id}
+    </delete>
+    
+    <!-- 주문취소 버튼 클릭 시 결제완료 -> 취소완료 상태로 변경 -->
+    <update id="updateCancelComple">
+        update DELIVERIES
+        set dstatus = '취소완료', dmodified_time = systimestamp
+        where ID = #{id}
+    </update>
+    
+    <!-- 구매확정 버튼 클릭 시 배송완료 -> 구매확정 상태로 변경 -->
+    <update id="updateBuyComple">
+        update DELIVERIES
+        set dstatus = '구매확정', dmodified_time = systimestamp
+        where ID = #{id}
+    </update>
+
+    <!-- 배송 조회 페이지 배송 정보 -->
+    <select id="selectDeliveryInfo"
+        resultType="com.itwill.joo.dto.order.DeliveryInfoDto">
+        SELECT D.dstatus, D.dcode, O.ocreated_time,
+        D.dcreated_time, D.rname, D.dstreet, D.ddetail_address
+        FROM USERS U, ORDERS O, DELIVERIES D
+        WHERE U.ID = O.U_ID
+        AND O.ID = D.O_ID
+        AND D.ID = #{id} 
+    </select>
+    
+    <!-- 상품 주문시 주문 정보 저장 -->
+    <insert id="insertOrder">
+        INSERT INTO ORDERS (U_ID, OINITIAL_PRICE, ODISCOUNT_PRICE, OFINAL_PRICE, OPOINT,  OSTATUS)
+        VALUES (#{u_id}, #{oinitial_price}, #{odiscount_price}, #{ofinal_price}, #{opoint}, #{ostatus})
+    </insert>
+    
+    <!-- Orders 테이블의 id값 중 최신값(최댓값) 반환 (o_id반환)-->
+    <select id="selectOrderMaxId"
+        resultType="java.lang.Long">
+        SELECT MAX(id) 
+        FROM ORDERS
+    </select>
+    
+    <!-- 상품 주문시 주문 상품 정보 저장 -->
+    <insert id="insertOrderProduct">
+        INSERT INTO ORDER_PRODUCTS (P_ID, O_ID, PCOUNT, PPRICE)
+        VALUES (#{p_id}, #{o_id}, #{pcount}, #{pprice})
+    </insert>
+    
+    <!-- 상품 주문시 배송 정보 저장 -->
+    <insert id="insertDelivery">
+        INSERT INTO DELIVERIES (O_ID, DCODE, DSTREET, DDETAIL_ADDRESS, DPOSTCODE, RNAME,
+                                RPHONE, DMESSAGE, DSTATUS, DTYPE)
+        VALUES (#{o_id}, #{dcode}, #{dstreet}, #{ddetail_address}, #{dpostcode}, #{rname},
+                #{rphone}, #{dmessage}, #{dstatus}, #{dtype})
+    </insert>
+    
+    <!-- 장바구니에 의한 주문 페이지 -->
+    <select id="selectOrderByBasket"
+        resultType="com.itwill.joo.dto.order.OrderByBasketDto">
+        SELECT P.PTITLE_IMAGE, P.PNAME, P.PPRICE, P.PSTOCK, U.UNAME, U.UPOSTCODE, U.USTREET, 
+        U.UDETAIL_ADDRESS, U.UPHONE, U.UEMAIL, U.UCURRENT_POINT, BP.PCOUNT, U.ID as "uid", P.ID as "pid" 
+        FROM PRODUCTS P, USERS U, BASKET_PRODUCTS BP, BASKET B
+        WHERE P.ID = BP.P_ID
+        AND U.ID = B.U_ID
+        AND B.ID = BP.B_ID
+        AND U.ID = #{id}
+        ORDER BY BP.PCOUNT desc
+    </select>
+    
+    <!-- 유저 현재 포인트 - 사용 포인트 -> 결제완료 시 -->
+    <update id="updateCurrentPointWhenPay">
+        UPDATE USERS
+        SET UCURRENT_POINT = UCURRENT_POINT - #{odiscount_price}
+        WHERE USERS.ID = #{u_id}
+    </update>
+    
+    <!-- 재고수 - 수량 / 판매량 + 수량 -> 결제완료 시 -->
+    <update id="updateStockAndSoldWhenPay">
+        UPDATE PRODUCTS
+        SET PSTOCK = PSTOCK - #{pcount},
+            PSOLD = PSOLD + #{pcount}
+        WHERE PRODUCTS.ID = #{p_id}
+    </update>
+    
+    <!-- 유저 현재 포인트 + 사용 포인트 -> 주문 취소 시 -->
+    <update id="updateCurrentPointWhenCancel">
+        UPDATE USERS
+        SET UCURRENT_POINT = UCURRENT_POINT + #{odiscount_price}
+        WHERE USERS.ID = #{uid}
+    </update>
+    
+    <!-- 재고수 + 수량 / 판매량 - 수량 -> 주문취소 시 -->
+    <update id="updateStockAndSoldWhenCancel">
+        UPDATE PRODUCTS
+        SET PSTOCK = PSTOCK + #{pcount},
+            PSOLD = PSOLD - #{pcount}
+        WHERE PRODUCTS.ID = #{pid}
+    </update>
+    
+    <!-- 유저 누적 포인트 + 적립 포인트 -> 구매 확정 시 -->
+    <!-- 유저 현재 포인트 + 적립 포인트 -> 구매 확정 시 -->
+    <update id="updateCurrentPointWhenComple">
+        UPDATE USERS
+        SET UTOTAL_POINT = UTOTAL_POINT + #{opoint},
+            UCURRENT_POINT = UCURRENT_POINT + #{opoint}
+        WHERE USERS.ID = #{uid}
+    </update>
+    
+    <!-- 주문조회에서 주문번호 눌렀을 시 상품 상세페이지 정보 -->
+    <select id="selectDetailOrderProduct"
+        resultType="com.itwill.joo.dto.order.DetailOrderProductDto">
+        SELECT P.PTITLE_IMAGE, P.PNAME, OP.PCOUNT, OP.PPRICE, D.ID, D.dcreated_time, P.ID as "pid"
+        FROM PRODUCTS P, ORDER_PRODUCTS OP, ORDERS O, DELIVERIES D
+        WHERE P.ID = OP.P_ID
+        AND OP.O_ID = O.ID
+        AND O.ID = D.O_ID
+        AND D.ID = #{id}
+        ORDER BY OP.PCOUNT desc
+    </select>
+    
+    
+
+
+</mapper>

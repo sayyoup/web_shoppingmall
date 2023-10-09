@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.itwill.joo.repository.ReviewRepository">
+	
+	<select id="selectAllReviewsByPid" resultType="com.itwill.joo.domain.Review">
+		select * from REVIEWS
+		where P_ID = #{p_id}
+		order by RCREATED_TIME desc
+	</select>
+	
+	<select id="selectAllReviewsByUid" resultType="com.itwill.joo.domain.Review">
+		select * from REVIEWS
+		where U_ID = #{u_id}
+		order by RCREATED_TIME desc
+	</select>
+	
+	<insert id="createReview">
+		insert into REVIEWS (P_ID, O_ID, U_ID, RCONTENT, RRATINGS, RCREATED_TIME, RMODIFIED_TIME)
+		values(#{p_id}, #{o_id}, #{u_id}, #{rcontent}, #{rratings}, systimestamp, systimestamp)
+	</insert>
+	
+</mapper>

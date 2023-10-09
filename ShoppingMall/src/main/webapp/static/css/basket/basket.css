@@ -1,0 +1,9 @@
+@charset "UTF-8";
+/* 장바구니 전체 컨테이너 스타일링 */
+/* 장바구니 테이블 스타일링 */
+
+
+.btndeleteAll {
+  background-color: #ff0000;
+  /* 다른 스타일 속성들 */
+}

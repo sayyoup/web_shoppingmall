@@ -1,0 +1,149 @@
+@charset "UTF-8";
+/* productDetail.jsp CSS */
+.table-container {
+    margin-top: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #000; /* 배경색을 검정색으로 설정 */
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: bold;
+    padding: 10px;
+    text-align: left;
+}
+
+.table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    color: #fff; /* 글자 색상을 흰색으로 설정 */
+}
+
+.table tbody td:first-child {
+    width: 5%;
+}
+
+.table tbody td:nth-child(2) {
+    width: 10%;
+}
+
+.table tbody td:nth-child(3) {
+    width: 25%;
+}
+
+.table tbody td:nth-child(4) {
+    width: 30%;
+}
+
+.table tbody td:nth-child(5) {
+    width: 15%;
+}
+
+.table tbody td:last-child {
+    width: 15%;
+}
+
+/* 페이징 스타일 */
+.big-width {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination {
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.pagination li {
+  margin-right: 5px;
+}
+
+.page-link {
+  color: #333;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  text-decoration: none;
+}
+
+.page-link:hover {
+  background-color: #e9ecef;
+}
+
+.page-item.disabled .page-link {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.page-item.active .page-link {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+/* actionForm 스타일 */
+#actionForm {
+  display: none; /* 숨김 처리 */
+}
+
+/* 커스텀 페이징 스타일 */
+.custom-pagination {
+  display: inline-block;
+  padding-left: 0;
+  margin-top: 20px;
+  border-radius: 4px;
+}
+
+.custom-pagination li {
+  display: inline;
+}
+
+.custom-pagination li a {
+  position: relative;
+  float: left;
+  padding: 6px 12px;
+  margin-left: -1px;
+  line-height: 1.42857143;
+  color: #333;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.custom-pagination li:first-child a {
+  margin-left: 0;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.custom-pagination li:last-child a {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.custom-pagination li.active a {
+  z-index: 3;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.custom-pagination li.disabled a {
+  color: #868e96;
+  pointer-events: none;
+  cursor: not-allowed;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.custom-pagination li a:hover {
+  background-color: #e9ecef;
+}
+

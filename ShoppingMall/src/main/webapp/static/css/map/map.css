@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+body {
+    background-color: #343A40;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #343A40;
+}
+
+iframe {
+    width: 600px;
+    height: 450px;
+    border: 0;
+    background-color: #343A40;
+}

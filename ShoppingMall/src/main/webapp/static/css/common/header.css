@@ -1,0 +1,15 @@
+@media (min-width: 992px) {
+  .navbar-toggler {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* 헤더가 스크롤과 함께 움직이도록 설정 */
+
+
+.navbar.fixed-top {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
